@@ -16,21 +16,23 @@ This project is a Django-based online shop. It includes functionalities for user
 - [License](#license)
 
 ## Project Structure
-django-shop-project/
-├── core/
-├── users/
-├── products/
-├── reviews/
-├── cart/
-├── admin_panel/
-├── myshop/
-│ ├── init.py
-│ ├── settings.py
-│ ├── urls.py
-│ ├── wsgi.py
-│ ├── asgi.py
-├── manage.py
-└── README.md
+    '''bash
+    django-shop-project/
+    ├── core/
+    ├── users/
+    ├── products/
+    ├── reviews/
+    ├── cart/
+    ├── admin_panel/
+    ├── myshop/
+    │ ├── init.py
+    │ ├── settings.py
+    │ ├── urls.py
+    │ ├── wsgi.py
+    │ ├── asgi.py
+    ├── manage.py
+    └── README.md     
+
 
 
 ## Getting Started
