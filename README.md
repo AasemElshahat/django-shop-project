@@ -16,7 +16,7 @@ This project is a Django-based online shop. It includes functionalities for user
 - [License](#license)
 
 ## Project Structure
-    '''bash
+
     django-shop-project/
     ├── core/
     ├── users/
