@@ -13,7 +13,6 @@ This project is a Django-based online shop. It includes functionalities for user
 - [Running the Project](#running-the-project)
 - [Contributing](#contributing)
 - [Branching Workflow](#branching-workflow)
-- [License](#license)
 
 ## Project Structure
 
