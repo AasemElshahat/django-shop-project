@@ -20,19 +20,20 @@ This project is a Django-based online shop. It includes functionalities for user
 
     django-shop-project/
     ├── myshop/
-    │ ├── init.py
-    │ ├── settings.py
-    │ ├── urls.py
-    │ ├── wsgi.py
-    │ ├── asgi.py
-    ├── core/
-    ├── users/
-    ├── products/
-    ├── reviews/
-    ├── cart/
-    ├── admin_panel/
     ├── manage.py
     └── README.md
+      ├── init.py
+      ├── settings.py
+      ├── urls.py
+      ├── wsgi.py
+      ├── asgi.py
+      ├── core/
+      ├── users/
+      ├── products/
+      ├── reviews/
+      ├── cart/
+      └── admin_panel/
+
 
 ## Getting Started
 
