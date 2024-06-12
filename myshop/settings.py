@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +29,24 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+# Authentication and Login/Logout redirection
+AUTH_USER_MODEL = 'users.CustomUser'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+
+# Media files
+MEDIA_URL = '/myshop/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'myshop/media')
+
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = 'myshop/static/'
+
+# Add the following if you have static files in the root static directory
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'myshop/static'),
+]
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -37,12 +56,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core',
-    'users',
-    'products',
-    'reviews',
-    'cart',
-    'admin_panel',
+    'myshop.core',
+    'myshop.users',
+    'myshop.products',
+    'myshop.reviews',
+    'myshop.cart',
+    'myshop.admin_panel',
+    'django_bootstrap5',
 ]
 
 MIDDLEWARE = [
@@ -60,7 +80,7 @@ ROOT_URLCONF = 'myshop.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'myshop/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

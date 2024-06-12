@@ -1,0 +1,8 @@
+{% extends 'base.html' %} {% block content %}
+<h2>Profile</h2>
+{% if user.profile_picture %}
+<img src="{{ user.profile_picture.url }}" alt="Profile Picture" />
+{% else %}
+<p>No profile picture available.</p>
+
+{% endif %} {% endblock %}
