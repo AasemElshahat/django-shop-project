@@ -19,18 +19,18 @@ This project is a Django-based online shop. It includes functionalities for user
 ## Project Structure
 
     django-shop-project/
-    ├── core/
-    ├── users/
-    ├── products/
-    ├── reviews/
-    ├── cart/
-    ├── admin_panel/
     ├── myshop/
     │ ├── init.py
     │ ├── settings.py
     │ ├── urls.py
     │ ├── wsgi.py
     │ ├── asgi.py
+    ├── core/
+    ├── users/
+    ├── products/
+    ├── reviews/
+    ├── cart/
+    ├── admin_panel/
     ├── manage.py
     └── README.md
 
