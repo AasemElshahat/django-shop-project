@@ -25,6 +25,7 @@ urlpatterns = [
     path('', include('myshop.core.urls')),
     path('users/', include('myshop.users.urls')),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('products/', include('myshop.products.urls')),
 ]
 
 

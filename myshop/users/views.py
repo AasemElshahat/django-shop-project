@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, CustomerUserChangeForm
 from django.contrib.auth.decorators import login_required
 
 def register(request):
@@ -16,6 +16,19 @@ def register(request):
   
   return render(request, 'users/register.html', {'form':form})
 
+
 @login_required
 def profile(request):
   return render(request, 'users/profile.html')
+
+@login_required
+def edit_profile(request):
+  if request.method == 'POST':
+    form = CustomerUserChangeForm(request.POST, request.FILES, instance=request.user)
+    if form.is_valid():
+      form.save()
+      return redirect('profile')
+  else: 
+    form = CustomerUserChangeForm(instance=request.user)
+  
+  return render(request, 'users/edit_profile.html',{'form':form})
