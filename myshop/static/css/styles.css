@@ -1,3 +1,13 @@
-body {
-  padding-top: 4.5rem;
+/* Custom styles for read-only form fields */
+input[readonly],
+textarea[readonly] {
+  background-color: #e9ecef; /* Light gray background for read-only fields */
+  opacity: 1; /* Full opacity */
+  cursor: not-allowed; /* Show not-allowed cursor */
+}
+
+/* Center the card in the middle of the page */
+.card {
+  max-width: 800px; /* Limit the maximum width of the card */
+  margin: 0 auto; /* Center the card horizontally */
 }

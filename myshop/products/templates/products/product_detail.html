@@ -1,0 +1,86 @@
+{% extends 'base.html' %} {% block content %}
+<div class="container mt-4">
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'product_list' %}">Products</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">
+        {{ product.name }}
+      </li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-6">
+      <!-- Carousel for product images -->
+      <div
+        id="carousel-{{ product.id }}"
+        class="carousel slide"
+        data-bs-ride="carousel"
+      >
+        <div class="carousel-inner">
+          {% for image in product.images.all %}
+          <div class="carousel-item {% if forloop.first %}active{% endif %}">
+            <img
+              src="{{ image.image.url }}"
+              class="d-block w-100"
+              alt="{{ product.name }}"
+            />
+          </div>
+          {% endfor %}
+        </div>
+        <!-- Carousel controls -->
+        <a
+          class="carousel-control-prev"
+          href="#carousel-{{ product.id }}"
+          role="button"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </a>
+        <a
+          class="carousel-control-next"
+          href="#carousel-{{ product.id }}"
+          role="button"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </a>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <h2>{{ product.name }}</h2>
+      <p>{{ product.description }}</p>
+      {% if product.discount %}
+      <p>
+        <span class="text-muted" style="text-decoration: line-through"
+          >${{ product.price }}</span
+        >
+        <span class="text-danger"
+          >${{ product.discounted_price|floatformat:2 }}</span
+        >
+      </p>
+      {% else %}
+      <p>${{ product.price }}</p>
+      {% endif %}
+      <p>
+        {% if product.stock_status == EMPTY_STOCK %}
+        <span class="badge badge-danger">{{ product.stock_status }}</span>
+        {% elif product.stock_status == LIMITED_STOCK_STATUS %}
+        <span class="badge badge-warning">{{ product.stock_status }}</span>
+        {% else %}
+        <span class="badge badge-success">{{ product.stock_status }}</span>
+        {% endif %}
+      </p>
+      <a href="#" class="btn btn-primary">Add to Cart</a>
+      <a href="{{ product.pdf.url }}" class="btn btn-secondary" target="_blank"
+        >Download Description</a
+      >
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -35,7 +35,7 @@ LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
 # Media files
-MEDIA_URL = '/myshop/media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'myshop/media')
 
 # Static files (CSS, JavaScript, Images)
@@ -63,7 +63,12 @@ INSTALLED_APPS = [
     'myshop.cart',
     'myshop.admin_panel',
     'django_bootstrap5',
+    'crispy_forms',
+    'crispy_bootstrap5',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACK = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
