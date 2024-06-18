@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 
-# Create your models here.
+
+class Category(models.Model):
+  name = models.CharField(max_length=100)
+
 class Product(models.Model):
   name = models.CharField(max_length=255)
   description = models.TextField()
@@ -14,6 +17,7 @@ class Product(models.Model):
   cart = models.ManyToManyField(get_user_model(), null=True, blank=True,related_name='carted_products')
   discount = models.IntegerField(default=0)
   stock = models.IntegerField(default=0)
+  category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
 
   def __str__(self):
     return self.name

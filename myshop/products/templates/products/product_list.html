@@ -1,6 +1,14 @@
 {% extends 'base.html' %} {% block content %}
 <div class="container mt-4">
   <h2>Product Listings</h2>
+
+  <!-- Display search query if present -->
+  {% if query %}
+  <p>Showing results for "{{ query }}":</p>
+  {% if no_results %}
+  <p>No products found for "{{ query }}".</p>
+  {% endif %} {% endif %}
+
   <div class="row">
     {% for product in products %}
     <div class="col-md-4 mb-4">
@@ -74,6 +82,9 @@
         </div>
       </div>
     </div>
+    {% empty %}
+    <!-- Display no products available if no products found -->
+    <p>No products available.</p>
     {% endfor %}
   </div>
 </div>
