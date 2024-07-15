@@ -2,13 +2,6 @@
 <div class="container mt-4">
   <h2>Product Listings</h2>
 
-  <!-- Display search query if present -->
-  {% if query %}
-  <p>Showing results for "{{ query }}":</p>
-  {% if no_results %}
-  <p>No products found for "{{ query }}".</p>
-  {% endif %} {% endif %}
-
   <div class="row">
     {% for product in products %}
     <div class="col-md-4 mb-4">
