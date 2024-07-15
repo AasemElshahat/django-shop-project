@@ -1,36 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Product, ProductImage, Category
-
-
-# Search view
-def home_view(request):
-    query = request.GET.get('q', '')
-    products = Product.objects.filter(name__icontains=query) | Product.objects.filter(description__icontains=query)
-    return render(request, 'home.html', {'products': products, 'query': query})
-
-def product_list_view(request):
-    query = request.GET.get('q', '')
-    products = Product.objects.all()
-    
-    if query:
-        products = products.filter(name__icontains=query) | products.filter(description__icontains=query)
-        no_results = not products.exists()
-    else:
-        no_results = False
-
-    categories = Category.objects.all()
-    selected_category = request.GET.get('category')
-    if selected_category:
-        products = products.filter(category__id=selected_category)
-    
-    context = {
-        'products': products, 
-        'categories': categories,
-        'query': query,
-        'no_results': no_results,
-    }
-    return render(request, 'product_list.html',context)
-
+from .models import Product
 
 
 def product_list(request):
