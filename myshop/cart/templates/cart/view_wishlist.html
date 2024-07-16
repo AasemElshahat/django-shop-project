@@ -1,0 +1,48 @@
+{% extends "base.html" %} {% block content %} {% load static %}
+<div class="wishlist-container">
+  <div class="cart-header">
+    <div class="cart-tabs">
+      <a href="{% url 'cart:view_cart' %}" class="cart-tab"
+        >Cart ({{ cart_items.count }})</a
+      >
+      <a href="{% url 'cart:view_wishlist' %}" class="wishlist-tab active"
+        >Wishlist ({{ wishlist_items.count }})</a
+      >
+    </div>
+  </div>
+
+  <h2>Your Wishlist</h2>
+  <div class="wishlist-items">
+    {% for item in wishlist_items %}
+    <div class="wishlist-item">
+      <div class="wishlist-item-image">
+        {% with item.product.images.first as image %} {% if image %}
+        <img src="{{ image.image.url }}" alt="{{ item.product.name }}" />
+        {% else %}
+        <img
+          src="{% static 'images/noImgPlaceholder.jpeg' %}"
+          alt="No image available"
+        />
+        {% endif %} {% endwith %}
+      </div>
+      <div class="wishlist-item-details">
+        <h3>{{ item.product.name }}</h3>
+        <p>Price: €{{ item.product.price }}</p>
+        <div class="wishlist-item-actions">
+          <a
+            href="{% url 'cart:add_to_cart' item.product.id %}"
+            class="action-link"
+            >Add to cart</a
+          >
+          <a
+            href="{% url 'cart:remove_from_wishlist' item.product.id %}"
+            class="action-link"
+            >Remove</a
+          >
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

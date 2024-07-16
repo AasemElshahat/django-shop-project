@@ -1,0 +1,89 @@
+{% extends "base.html" %} {% block content %} {% load static %}
+<div class="cart-container">
+  <div class="cart-header">
+    <div class="cart-tabs">
+      <a href="{% url 'cart:view_cart' %}" class="cart-tab active"
+        >Cart ({{ cart_items.count }})</a
+      >
+      <a href="{% url 'cart:view_wishlist' %}" class="wishlist-tab"
+        >Wishlist ({{ wishlist_items.count }})</a
+      >
+    </div>
+    <div class="empty-cart">
+      <a href="{% url 'cart:empty_cart' %}" class="empty-cart-link"
+        >Empty cart</a
+      >
+    </div>
+  </div>
+
+  <h2>You've got {{ cart_items.count }} items in your cart</h2>
+  <p>
+    Items in your cart are not reserved - to make them yours head to checkout
+    now.
+  </p>
+
+  <div class="cart-items">
+    {% for item in cart_items %}
+    <div class="cart-item">
+      <div class="cart-item-image">
+        {% with item.product.images.first as image %} {% if image %}
+        <img src="{{ image.image.url }}" alt="{{ item.product.name }}" />
+        {% else %}
+        <img
+          src="{% static 'images/noImgPlaceholder.jpeg' %}"
+          alt="No image available"
+        />
+        {% endif %} {% endwith %}
+      </div>
+      <div class="cart-item-details">
+        <h3>{{ item.product.name }}</h3>
+        <p>Color: {{ item.product.color }}</p>
+        <p>Shoe Size: {{ item.product.size }}</p>
+        <div class="cart-item-actions">
+          <a
+            href="{% url 'cart:add_to_wishlist' item.product.id %}"
+            class="action-link"
+            >Add to wishlist</a
+          >
+          <a
+            href="{% url 'cart:update_cart_item' item.id %}"
+            class="action-link"
+            >Edit</a
+          >
+          <a
+            href="{% url 'cart:remove_cart_item' item.id %}"
+            class="action-link"
+            >Remove</a
+          >
+        </div>
+      </div>
+      <div class="cart-item-quantity">
+        <form method="POST" action="{% url 'cart:update_cart_item' item.id %}">
+          {% csrf_token %}
+          <button type="submit" class="quantity-button">-</button>
+          <input
+            type="number"
+            name="quantity"
+            value="{{ item.quantity }}"
+            min="1"
+            readonly
+          />
+          <button type="submit" class="quantity-button">+</button>
+        </form>
+      </div>
+      <div class="cart-item-price">
+        <p>€{{ item.product.price }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="order-summary">
+    <h3>Order summary</h3>
+    <p>Subtotal: €{{ total_price }}</p>
+    <p>Shipping: Free</p>
+    <p>Total: €{{ total_price }}</p>
+    <button class="checkout-button">Checkout</button>
+  </div>
+</div>
+{% endblock %}

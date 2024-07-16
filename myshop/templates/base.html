@@ -72,6 +72,9 @@
                 Search
               </button>
             </form>
+            <a href="{% url 'cart:view_cart' %}">
+              <i class="fa fa-shopping-cart"></i> Cart
+            </a>
             <!-- user actions: Login/Register for guests, Profile/Logout for authenticated users -->
             <ul class="navbar-nav">
               {% if user.is_authenticated %}

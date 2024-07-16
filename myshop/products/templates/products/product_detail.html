@@ -79,7 +79,11 @@
         <span class="badge badge-success">{{ product.stock_status }}</span>
         {% endif %}
       </p>
-      <a href="#" class="btn btn-primary">Add to Cart</a>
+      <form method="POST" action="{% url 'cart:add_to_cart' product.id %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">Add to Cart</button>
+      </form>
+      <!-- <a href="#" class="btn btn-primary">Add to Cart</a> -->
       <a href="{{ product.pdf.url }}" class="btn btn-secondary" target="_blank"
         >Download Description</a
       >
