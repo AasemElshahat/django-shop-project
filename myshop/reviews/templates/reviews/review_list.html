@@ -19,18 +19,19 @@
         <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
       </p>
       {% if review.user == request.user %}
-      <button
-        class="btn btn-sm btn-secondary edit-review"
-        data-review-id="{{ review.id }}"
+      <a
+        href="{% url 'review-create-or-edit' product.id review.id %}"
+        class="btn btn-sm btn-secondary"
+        >Edit</a
       >
-        Edit
-      </button>
-      <button
-        class="btn btn-sm btn-danger delete-review"
-        data-review-id="{{ review.id }}"
+      <form
+        method="post"
+        action="{% url 'review-delete' review.id %}"
+        style="display: inline"
       >
-        Delete
-      </button>
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+      </form>
       {% endif %}
     </div>
   </div>

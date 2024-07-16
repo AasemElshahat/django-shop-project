@@ -102,226 +102,31 @@
         </div>
         <span>{{ product.reviews.count }} reviews</span>
         {% if not user_review_exists %}
-        <a href="#" class="btn btn-link ml-auto" id="add-review"
+        <a
+          href="{% url 'review-create-or-edit' product.id %}"
+          class="btn btn-link ml-auto"
           >Write a review</a
         >
         {% endif %}
       </div>
-      <div id="review-form-container" class="mb-4"></div>
+
+      <!-- Display messages -->
+      {% if messages %}
+      <div class="alert alert-info">
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+      </div>
+      {% endif %}
+
+      <div id="review-form-container" class="mb-4">
+        {% if form %} {% include 'reviews/review_form.html' %} {% endif %}
+      </div>
+
       <div id="reviews-list" class="row">
         {% include 'reviews/review_list.html' %}
       </div>
     </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOM fully loaded and parsed");
-
-    const addReviewButton = document.getElementById("add-review");
-    if (addReviewButton) {
-      console.log("Add review button found");
-      addReviewButton.addEventListener("click", function (event) {
-        console.log("Add review button clicked");
-        event.preventDefault();
-        fetchReviewForm("{% url 'review-create-or-edit' product.id %}");
-      });
-    } else {
-      console.error("Add review button not found");
-    }
-
-    document.querySelectorAll(".edit-review").forEach(function (button) {
-      console.log("Edit review button found");
-      button.addEventListener("click", function (event) {
-        console.log("Edit review button clicked");
-        event.preventDefault();
-        const reviewId = this.getAttribute("data-review-id");
-        fetchReviewForm(
-          "{% url 'review-create-or-edit' product.id 0 %}".replace(
-            "/0/",
-            "/" + reviewId + "/"
-          )
-        );
-      });
-    });
-
-    document.querySelectorAll(".delete-review").forEach(function (button) {
-      console.log("Delete review button found");
-      button.addEventListener("click", function (event) {
-        console.log("Delete review button clicked");
-        event.preventDefault();
-        const reviewId = this.getAttribute("data-review-id");
-        deleteReview(reviewId);
-      });
-    });
-
-    function fetchReviewForm(url) {
-      console.log("Fetching review form from:", url);
-      fetch(url, {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
-      })
-        .then((response) => {
-          console.log("Response status:", response.status);
-          if (!response.ok) throw new Error("Network response was not ok");
-          return response.json();
-        })
-        .then((data) => {
-          console.log("Received data:", data);
-          document.getElementById("review-form-container").innerHTML =
-            data.form;
-          attachFormSubmit();
-          attachStarRating();
-        })
-        .catch((error) => {
-          console.error("Error fetching form:", error);
-          alert(
-            "An error occurred while loading the review form. Please try again."
-          );
-        });
-    }
-
-    function attachFormSubmit() {
-      const form = document.querySelector("#review-form-container form");
-      if (form) {
-        form.addEventListener("submit", function (event) {
-          event.preventDefault();
-          fetch(form.action, {
-            method: form.method,
-            body: new FormData(form),
-            headers: {
-              "X-Requested-With": "XMLHttpRequest",
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.success) {
-                document.getElementById("reviews-list").innerHTML =
-                  data.reviews_html;
-                document.getElementById("review-form-container").innerHTML = "";
-                attachEditReview();
-                attachDeleteReview();
-              } else {
-                document.getElementById("review-form-container").innerHTML =
-                  data.form;
-                attachFormSubmit();
-                attachStarRating();
-              }
-            })
-            .catch((error) => {
-              console.error("Error submitting form:", error);
-              alert(
-                "An error occurred while submitting the review. Please try again."
-              );
-            });
-        });
-      } else {
-        console.error("Form not found in #review-form-container");
-      }
-    }
-
-    function attachStarRating() {
-      const starContainer = document.querySelector(
-        "#review-form-container .star-rating"
-      );
-      const ratingInput = document.querySelector(
-        "#review-form-container input[name='rating']"
-      );
-
-      if (starContainer && ratingInput) {
-        starContainer.addEventListener("mouseover", function (e) {
-          if (e.target.classList.contains("star")) {
-            const rating = e.target.getAttribute("data-rating");
-            highlightStars(rating);
-          }
-        });
-
-        starContainer.addEventListener("mouseout", function () {
-          highlightStars(ratingInput.value);
-        });
-
-        starContainer.addEventListener("click", function (e) {
-          if (e.target.classList.contains("star")) {
-            const rating = e.target.getAttribute("data-rating");
-            ratingInput.value = rating;
-            highlightStars(rating);
-          }
-        });
-
-        function highlightStars(rating) {
-          starContainer.querySelectorAll(".star").forEach((star, index) => {
-            star.classList.toggle("filled", index < rating);
-          });
-        }
-
-        highlightStars(ratingInput.value); // Initialize with the current rating
-      } else {
-        console.error("Star rating container or rating input not found");
-      }
-    }
-
-    function attachEditReview() {
-      document.querySelectorAll(".edit-review").forEach(function (button) {
-        button.addEventListener("click", function (event) {
-          event.preventDefault();
-          const reviewId = this.getAttribute("data-review-id");
-          fetchReviewForm(
-            "{% url 'review-create-or-edit' product.id 0 %}".replace(
-              "/0/",
-              "/" + reviewId + "/"
-            )
-          );
-        });
-      });
-    }
-
-    function attachDeleteReview() {
-      document.querySelectorAll(".delete-review").forEach(function (button) {
-        button.addEventListener("click", function (event) {
-          event.preventDefault();
-          const reviewId = this.getAttribute("data-review-id");
-          deleteReview(reviewId);
-        });
-      });
-    }
-
-    function deleteReview(reviewId) {
-      fetch(
-        "{% url 'review-delete' 0 %}".replace("/0/", "/" + reviewId + "/"),
-        {
-          method: "POST",
-          headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": "{{ csrf_token }}",
-          },
-        }
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            document.getElementById("reviews-list").innerHTML =
-              data.reviews_html;
-            attachEditReview();
-            attachDeleteReview();
-          } else {
-            alert(
-              "An error occurred while deleting the review. Please try again."
-            );
-          }
-        })
-        .catch((error) => {
-          console.error("Error deleting review:", error);
-          alert(
-            "An error occurred while deleting the review. Please try again."
-          );
-        });
-    }
-
-    attachDeleteReview();
-    attachEditReview();
-  });
-</script>
-
 {% endblock %}
