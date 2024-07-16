@@ -47,11 +47,12 @@
           role="button"
           data-bs-slide="next"
         >
-          <span class="visually-hidden">Next</span>
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
         </a>
       </div>
     </div>
+
     <div class="col-md-6">
       <h2>{{ product.name }}</h2>
       <p>{{ product.description }}</p>
@@ -68,6 +69,7 @@
       {% else %}
       <p>${{ product.price }}</p>
       {% endif %}
+
       <p>
         {% if product.stock_status == EMPTY_STOCK %}
         <span class="badge badge-danger">{{ product.stock_status }}</span>
@@ -82,7 +84,8 @@
         >Download Description</a
       >
     </div>
-    <!-- reviews -->
+
+    <!-- Reviews Section -->
     <div class="col-md-12 mt-4">
       <h3>Customer reviews</h3>
       <div class="d-flex align-items-center mb-3">
@@ -98,55 +101,15 @@
           {% endfor %}
         </div>
         <span>{{ product.reviews.count }} reviews</span>
+        {% if not user_review_exists %}
         <a href="#" class="btn btn-link ml-auto" id="add-review"
           >Write a review</a
         >
+        {% endif %}
       </div>
       <div id="review-form-container" class="mb-4"></div>
       <div id="reviews-list" class="row">
-        {% for review in product.reviews.all %}
-        <div class="col-md-6 mb-4">
-          <div class="card">
-            <div class="card-body">
-              <div
-                class="d-flex justify-content-between align-items-center mb-2"
-              >
-                <h5 class="card-title mb-0">{{ review.user.username }}</h5>
-                <div class="star-rating" data-rating="{{ review.rating }}">
-                  {% for i in "12345" %}
-                  <span
-                    class="star{% if forloop.counter <= review.rating %} filled{% endif %}"
-                    >&#9733;</span
-                  >
-                  {% endfor %}
-                </div>
-              </div>
-              <p class="card-text">{{ review.comment }}</p>
-              <p class="card-text">
-                <small class="text-muted"
-                  >{{ review.created_at|date:"M d, Y" }}</small
-                >
-              </p>
-              {% if review.user == request.user %}
-              <button
-                class="btn btn-sm btn-secondary edit-review"
-                data-review-id="{{ review.id }}"
-              >
-                Edit
-              </button>
-              <button
-                class="btn btn-sm btn-danger delete-review"
-                data-review-id="{{ review.id }}"
-              >
-                Delete
-              </button>
-              {% endif %}
-            </div>
-          </div>
-        </div>
-        {% empty %}
-        <p>No reviews yet. Be the first to review this product!</p>
-        {% endfor %}
+        {% include 'reviews/review_list.html' %}
       </div>
     </div>
   </div>
@@ -183,6 +146,16 @@
       });
     });
 
+    document.querySelectorAll(".delete-review").forEach(function (button) {
+      console.log("Delete review button found");
+      button.addEventListener("click", function (event) {
+        console.log("Delete review button clicked");
+        event.preventDefault();
+        const reviewId = this.getAttribute("data-review-id");
+        deleteReview(reviewId);
+      });
+    });
+
     function fetchReviewForm(url) {
       console.log("Fetching review form from:", url);
       fetch(url, {
@@ -192,6 +165,7 @@
       })
         .then((response) => {
           console.log("Response status:", response.status);
+          if (!response.ok) throw new Error("Network response was not ok");
           return response.json();
         })
         .then((data) => {
@@ -201,33 +175,51 @@
           attachFormSubmit();
           attachStarRating();
         })
-        .catch((error) => console.error("Error fetching form:", error));
+        .catch((error) => {
+          console.error("Error fetching form:", error);
+          alert(
+            "An error occurred while loading the review form. Please try again."
+          );
+        });
     }
 
     function attachFormSubmit() {
       const form = document.querySelector("#review-form-container form");
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        fetch(form.action, {
-          method: form.method,
-          body: new FormData(form),
-          headers: {
-            "X-Requested-With": "XMLHttpRequest",
-          },
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              location.reload();
-            } else {
-              document.getElementById("review-form-container").innerHTML =
-                data.form;
-              attachFormSubmit();
-              attachStarRating();
-            }
+      if (form) {
+        form.addEventListener("submit", function (event) {
+          event.preventDefault();
+          fetch(form.action, {
+            method: form.method,
+            body: new FormData(form),
+            headers: {
+              "X-Requested-With": "XMLHttpRequest",
+            },
           })
-          .catch((error) => console.error("Error submitting form:", error));
-      });
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.success) {
+                document.getElementById("reviews-list").innerHTML =
+                  data.reviews_html;
+                document.getElementById("review-form-container").innerHTML = "";
+                attachEditReview();
+                attachDeleteReview();
+              } else {
+                document.getElementById("review-form-container").innerHTML =
+                  data.form;
+                attachFormSubmit();
+                attachStarRating();
+              }
+            })
+            .catch((error) => {
+              console.error("Error submitting form:", error);
+              alert(
+                "An error occurred while submitting the review. Please try again."
+              );
+            });
+        });
+      } else {
+        console.error("Form not found in #review-form-container");
+      }
     }
 
     function attachStarRating() {
@@ -238,31 +230,98 @@
         "#review-form-container input[name='rating']"
       );
 
-      starContainer.addEventListener("mouseover", function (e) {
-        if (e.target.classList.contains("star")) {
-          const rating = e.target.getAttribute("data-rating");
-          highlightStars(rating);
-        }
-      });
-
-      starContainer.addEventListener("mouseout", function () {
-        highlightStars(ratingInput.value);
-      });
-
-      starContainer.addEventListener("click", function (e) {
-        if (e.target.classList.contains("star")) {
-          const rating = e.target.getAttribute("data-rating");
-          ratingInput.value = rating;
-          highlightStars(rating);
-        }
-      });
-
-      function highlightStars(rating) {
-        starContainer.querySelectorAll(".star").forEach((star, index) => {
-          star.classList.toggle("filled", index < rating);
+      if (starContainer && ratingInput) {
+        starContainer.addEventListener("mouseover", function (e) {
+          if (e.target.classList.contains("star")) {
+            const rating = e.target.getAttribute("data-rating");
+            highlightStars(rating);
+          }
         });
+
+        starContainer.addEventListener("mouseout", function () {
+          highlightStars(ratingInput.value);
+        });
+
+        starContainer.addEventListener("click", function (e) {
+          if (e.target.classList.contains("star")) {
+            const rating = e.target.getAttribute("data-rating");
+            ratingInput.value = rating;
+            highlightStars(rating);
+          }
+        });
+
+        function highlightStars(rating) {
+          starContainer.querySelectorAll(".star").forEach((star, index) => {
+            star.classList.toggle("filled", index < rating);
+          });
+        }
+
+        highlightStars(ratingInput.value); // Initialize with the current rating
+      } else {
+        console.error("Star rating container or rating input not found");
       }
     }
+
+    function attachEditReview() {
+      document.querySelectorAll(".edit-review").forEach(function (button) {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          const reviewId = this.getAttribute("data-review-id");
+          fetchReviewForm(
+            "{% url 'review-create-or-edit' product.id 0 %}".replace(
+              "/0/",
+              "/" + reviewId + "/"
+            )
+          );
+        });
+      });
+    }
+
+    function attachDeleteReview() {
+      document.querySelectorAll(".delete-review").forEach(function (button) {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          const reviewId = this.getAttribute("data-review-id");
+          deleteReview(reviewId);
+        });
+      });
+    }
+
+    function deleteReview(reviewId) {
+      fetch(
+        "{% url 'review-delete' 0 %}".replace("/0/", "/" + reviewId + "/"),
+        {
+          method: "POST",
+          headers: {
+            "X-Requested-With": "XMLHttpRequest",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            document.getElementById("reviews-list").innerHTML =
+              data.reviews_html;
+            attachEditReview();
+            attachDeleteReview();
+          } else {
+            alert(
+              "An error occurred while deleting the review. Please try again."
+            );
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting review:", error);
+          alert(
+            "An error occurred while deleting the review. Please try again."
+          );
+        });
+    }
+
+    attachDeleteReview();
+    attachEditReview();
   });
 </script>
+
 {% endblock %}

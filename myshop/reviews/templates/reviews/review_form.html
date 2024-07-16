@@ -1,13 +1,16 @@
 <!-- reviews/templates/reviews/review_form.html -->
+<!-- reviews/templates/reviews/review_form.html -->
 <form method="post" action="{% url 'review-create-or-edit' product.id %}">
-  {% csrf_token %} {{ form.rating }}
-  <div class="star-rating">
-    <span class="star" data-rating="1">&#9733;</span>
-    <span class="star" data-rating="2">&#9733;</span>
-    <span class="star" data-rating="3">&#9733;</span>
-    <span class="star" data-rating="4">&#9733;</span>
-    <span class="star" data-rating="5">&#9733;</span>
+  {% csrf_token %}
+  <div class="form-group">
+    {{ form.rating.label_tag }}
+    <div class="star-rating">
+      {% for i in "12345" %}
+      <span class="star" data-rating="{{ forloop.counter }}">&#9733;</span>
+      {% endfor %}
+    </div>
+    {{ form.rating }}
   </div>
-  {{ form.comment }}
+  <div class="form-group">{{ form.comment.label_tag }} {{ form.comment }}</div>
   <button type="submit" class="btn btn-primary">Submit Review</button>
 </form>

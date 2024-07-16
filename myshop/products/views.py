@@ -21,12 +21,14 @@ def average_rating(self):
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, id=pk)
+    user_review_exists = product.reviews.filter(user=request.user).exists()
     product.discounted_price = get_discounted_price(product)
     product.stock_status = get_stock_status(product)
     context = {
         'product': product,
         'EMPTY_STOCK': EMPTY_STOCK,
         'LIMITED_STOCK_STATUS': LIMITED_STOCK_STATUS,
+        'user_review_exists': user_review_exists,
     }
     return render(request, 'products/product_detail.html', context)
 

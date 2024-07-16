@@ -1,13 +1,40 @@
-{% extends "base.html" %} {% block content %}
-<h2>Reviews for {{ product.name }}</h2>
-<ul>
-  {% for review in reviews %}
-  <li>
-    <strong>{{ review.user.username }}</strong> ({{ review.rating }}): {{
-    review.comment }} {% if review.user == request.user %}
-    <a href="{% url 'review-edit' review.pk %}">Edit</a>
-    {% endif %}
-  </li>
-  {% endfor %}
-</ul>
-{% endblock %}
+<!-- reviews/templates/reviews/review_list.html -->
+{% for review in product.reviews.all %}
+<div class="col-md-6 mb-4">
+  <div class="card">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <h5 class="card-title mb-0">{{ review.user.username }}</h5>
+        <div class="star-rating" data-rating="{{ review.rating }}">
+          {% for i in "12345" %}
+          <span
+            class="star{% if forloop.counter <= review.rating %} filled{% endif %}"
+            >&#9733;</span
+          >
+          {% endfor %}
+        </div>
+      </div>
+      <p class="card-text">{{ review.comment }}</p>
+      <p class="card-text">
+        <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+      </p>
+      {% if review.user == request.user %}
+      <button
+        class="btn btn-sm btn-secondary edit-review"
+        data-review-id="{{ review.id }}"
+      >
+        Edit
+      </button>
+      <button
+        class="btn btn-sm btn-danger delete-review"
+        data-review-id="{{ review.id }}"
+      >
+        Delete
+      </button>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% empty %}
+<p>No reviews yet. Be the first to review this product!</p>
+{% endfor %}
