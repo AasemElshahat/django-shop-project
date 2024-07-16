@@ -9,3 +9,8 @@ class ReviewForm(forms.ModelForm):
             'rating': forms.RadioSelect(choices=[(i, '⭐' * i) for i in range(1, 6)]),  # Star rating input
             'comment': forms.Textarea(attrs={'rows': 4}),
         }
+
+class ReviewForm(forms.ModelForm):
+    class Meta:
+        model = Review
+        fields = ['product', 'rating', 'comment']

@@ -1,0 +1,30 @@
+<!-- myshop/admin_panel/templates/admin_panel/dashboard.html -->
+{% extends "base.html" %} {% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    {% for breadcrumb in breadcrumbs %}
+    <li
+      class="breadcrumb-item {% if forloop.last %}active{% endif %}"
+      {%
+      if
+      forloop.last
+      %}aria-current="page"
+      {%
+      endif
+      %}
+    >
+      {% if not forloop.last %}
+      <a href="{{ breadcrumb.url }}">{{ breadcrumb.name }}</a>
+      {% else %} {{ breadcrumb.name }} {% endif %}
+    </li>
+    {% endfor %}
+  </ol>
+</nav>
+
+<h1>Admin Dashboard</h1>
+<ul>
+  <li><a href="{% url 'admin_product_list' %}">Manage Products</a></li>
+  <li><a href="{% url 'admin_review_list' %}">Manage Reviews</a></li>
+  <li><a href="{% url 'admin_user_list' %}">Manage Users</a></li>
+</ul>
+{% endblock %}

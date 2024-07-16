@@ -28,6 +28,8 @@ urlpatterns = [
     path('products/', include('myshop.products.urls')),
     path('reviews/', include('myshop.reviews.urls')),
     path('cart/', include('myshop.cart.urls')),
+    path('admin-panel/', include('myshop.admin_panel.urls')),  # Include admin_panel URLs
+
 ]
 
 
