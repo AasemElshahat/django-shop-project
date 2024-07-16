@@ -1,0 +1,13 @@
+{% extends "base.html" %} {% block content %}
+<h2>Reviews for {{ product.name }}</h2>
+<ul>
+  {% for review in reviews %}
+  <li>
+    <strong>{{ review.user.username }}</strong> ({{ review.rating }}): {{
+    review.comment }} {% if review.user == request.user %}
+    <a href="{% url 'review-edit' review.pk %}">Edit</a>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

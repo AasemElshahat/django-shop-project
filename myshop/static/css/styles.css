@@ -11,3 +11,18 @@ textarea[readonly] {
   max-width: 800px; /* Limit the maximum width of the card */
   margin: 0 auto; /* Center the card horizontally */
 }
+
+.star-rating {
+  font-size: 24px;
+  color: #ffd700;
+  cursor: pointer;
+}
+.star {
+  color: #ccc;
+  transition: color 0.2s;
+}
+.star.filled,
+.star:hover,
+.star:hover ~ .star {
+  color: #ffd700;
+}

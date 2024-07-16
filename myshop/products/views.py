@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Product
+from django.db.models import Avg
 
 
 def product_list(request):
@@ -13,6 +14,10 @@ def product_list(request):
         'LIMITED_STOCK_STATUS': LIMITED_STOCK_STATUS,
     }  
     return render(request, 'products/product_list.html', context)
+
+
+def average_rating(self):
+    return self.reviews.aggregate(Avg('rating'))['rating__avg']
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, id=pk)

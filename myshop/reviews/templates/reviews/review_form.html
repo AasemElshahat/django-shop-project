@@ -1,0 +1,13 @@
+<!-- reviews/templates/reviews/review_form.html -->
+<form method="post" action="{% url 'review-create-or-edit' product.id %}">
+  {% csrf_token %} {{ form.rating }}
+  <div class="star-rating">
+    <span class="star" data-rating="1">&#9733;</span>
+    <span class="star" data-rating="2">&#9733;</span>
+    <span class="star" data-rating="3">&#9733;</span>
+    <span class="star" data-rating="4">&#9733;</span>
+    <span class="star" data-rating="5">&#9733;</span>
+  </div>
+  {{ form.comment }}
+  <button type="submit" class="btn btn-primary">Submit Review</button>
+</form>

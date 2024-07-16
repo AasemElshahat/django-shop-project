@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.conf import settings  # Import settings to get the custom user model
 
 
 class Category(models.Model):
@@ -13,8 +14,8 @@ class Product(models.Model):
   pdf = models.FileField(upload_to='products/pdfs/')
   created_at = models.DateTimeField(auto_now_add=True)
   updated_at = models.DateTimeField(auto_now=True)
-  wishlist = models.ManyToManyField(get_user_model(), null=True, blank=True,related_name='wishlisted_products')
-  cart = models.ManyToManyField(get_user_model(), null=True, blank=True,related_name='carted_products')
+  cart = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='cart_products', blank=True)
+  wishlist = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='wishlist_products', blank=True)
   discount = models.IntegerField(default=0)
   stock = models.IntegerField(default=0)
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
