@@ -24,11 +24,14 @@ def product_detail(request, pk):
     user_review_exists = product.reviews.filter(user=request.user).exists()
     product.discounted_price = get_discounted_price(product)
     product.stock_status = get_stock_status(product)
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
+
     context = {
         'product': product,
         'EMPTY_STOCK': EMPTY_STOCK,
         'LIMITED_STOCK_STATUS': LIMITED_STOCK_STATUS,
         'user_review_exists': user_review_exists,
+        'related_products': related_products,
     }
     return render(request, 'products/product_detail.html', context)
 

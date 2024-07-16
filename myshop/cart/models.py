@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from myshop.products.models import Product
+from decimal import Decimal
+
 
 class CartItem(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -12,7 +14,7 @@ class CartItem(models.Model):
         return f"{self.quantity} of {self.product.name}"
 
     def get_total_price(self):
-        return self.quantity * self.product.price
+        return Decimal(self.quantity) * Decimal(self.product.price)
 
 
 class WishlistItem(models.Model):
