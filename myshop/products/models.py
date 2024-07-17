@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from django.conf import settings  # Import settings to get the custom user model
+from django.conf import settings  # importing settings to get the custom user model
+from django.db.models import Avg
+
 
 
 class Category(models.Model):
@@ -23,6 +25,9 @@ class Product(models.Model):
   stock = models.IntegerField(default=0)
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
   featured = models.BooleanField(default=False)  # New field
+
+  def average_rating(self):
+    return self.reviews.aggregate(average=Avg('rating'))['average'] or 0.0
 
 
   def __str__(self):

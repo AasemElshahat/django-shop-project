@@ -42,133 +42,14 @@ textarea[readonly] {
   margin-bottom: 20px;
 }
 
-.cart-tabs {
-  display: flex;
-}
-
-.cart-tab,
-.wishlist-tab {
-  padding: 10px 20px;
-  border: none;
-  background-color: #f0f0f0;
-  cursor: pointer;
-}
-
-.cart-tab.active {
-  background-color: #000;
-  color: #fff;
-}
-
-.wishlist-tab.active {
-  background-color: #000;
-  color: #fff;
-}
-
-.empty-cart {
-  align-self: center;
-}
-
-.empty-cart-link {
-  text-decoration: none;
-  color: #000;
-}
-
 .cart-items {
   width: 100%;
   margin-bottom: 20px;
 }
 
-.cart-item {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #f0f0f0;
-  padding: 10px 0;
-}
-
-.cart-item-image img {
-  width: 100px;
-  height: auto;
-}
-
-.cart-item-details {
-  flex: 1;
-  padding: 0 20px;
-}
-
-.cart-item-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.action-link {
-  text-decoration: none;
-  color: #000;
-}
-
-.cart-item-quantity {
-  display: flex;
-  align-items: center;
-}
-
-.quantity-button {
-  background: none;
-  border: 1px solid #000;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-.cart-item-price {
-  display: flex;
-  align-items: center;
-}
-
-.order-summary {
-  border: 1px solid #f0f0f0;
-  padding: 20px;
-  width: 100%;
-}
-
-.checkout-button {
-  background-color: #000;
-  color: #fff;
-  padding: 10px 20px;
-  border: none;
-  cursor: pointer;
-}
-
-.wishlist-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px auto;
-  max-width: 1000px;
-}
-
 .wishlist-items {
   width: 100%;
   margin-bottom: 20px;
-}
-
-.wishlist-item {
-  display: flex;
-  justify-content: space-between;
-  border-bottom: 1px solid #f0f0f0;
-  padding: 10px 0;
-}
-
-.wishlist-item-image img {
-  width: 100px;
-  height: auto;
-}
-
-.wishlist-item-details {
-  flex: 1;
-  padding: 0 20px;
-}
-
-.wishlist-item-actions {
-  display: flex;
-  gap: 10px;
 }
 
 .navbar {
@@ -262,4 +143,21 @@ footer {
 
 #featuredCarousel .carousel-control-next-icon {
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3e%3cpath d='M2.75 0l-1.5 1.5 2.5 2.5-2.5 2.5 1.5 1.5 4-4-4-4z'/%3e%3c/svg%3e");
+}
+
+.star-rating-input .star,
+.star-rating .star {
+  font-size: 24px;
+  color: #ddd;
+  cursor: pointer;
+}
+
+.star-rating-input .star.filled,
+.star-rating .star.filled {
+  color: #ffd700;
+}
+
+.star-rating-input .star:hover {
+  color: #ffd700;
+  cursor: pointer;
 }

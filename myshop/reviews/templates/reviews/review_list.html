@@ -1,4 +1,3 @@
-<!-- reviews/templates/reviews/review_list.html -->
 {% for review in product.reviews.all %}
 <div class="col-md-6 mb-4">
   <div class="card">
@@ -19,11 +18,12 @@
         <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
       </p>
       {% if review.user == request.user %}
-      <a
-        href="{% url 'review-create-or-edit' product.id review.id %}"
-        class="btn btn-sm btn-secondary"
-        >Edit</a
+      <button
+        class="btn btn-sm btn-secondary edit-review-btn"
+        data-product-id="{{ product.id }}"
       >
+        Edit
+      </button>
       <form
         method="post"
         action="{% url 'review-delete' review.id %}"

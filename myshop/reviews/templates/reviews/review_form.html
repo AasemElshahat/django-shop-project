@@ -1,12 +1,8 @@
-<!-- reviews/templates/reviews/review_form.html -->
-<form
-  method="post"
-  action="{% if review.id %}{% url 'review-create-or-edit' product.id review.id %}{% else %}{% url 'review-create-or-edit' product.id %}{% endif %}"
->
+<form method="post" action="{% url 'review-create-or-edit' product.id %}">
   {% csrf_token %}
   <div class="form-group">
-    {{ form.rating.label_tag }}
-    <div class="star-rating">
+    <label for="id_rating">Rating:</label>
+    <div class="star-rating-input">
       {% for i in "12345" %}
       <span class="star" data-rating="{{ forloop.counter }}">&#9733;</span>
       {% endfor %}

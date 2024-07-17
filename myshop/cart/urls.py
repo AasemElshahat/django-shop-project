@@ -10,6 +10,6 @@ urlpatterns = [
     path('remove/<int:cart_item_id>/', remove_cart_item, name='remove_cart_item'),
     path('empty/', empty_cart, name='empty_cart'),
     path('wishlist/add/<int:product_id>/', add_to_wishlist, name='add_to_wishlist'),
-    path('wishlist/remove/<int:product_id>/', remove_from_wishlist, name='remove_from_wishlist'),
+    path('wishlist/remove/<int:wishlist_item_id>/', remove_from_wishlist, name='remove_from_wishlist'),
     path('wishlist/', view_wishlist, name='view_wishlist'),
 ]

@@ -1,6 +1,4 @@
-{% extends 'base.html' %} 
-{% block content %} 
-{% load static %}
+{% extends 'base.html' %} {% block content %} {% load static %}
 <div class="container mt-4">
   <!-- Breadcrumbs -->
   <nav aria-label="breadcrumb">
@@ -8,9 +6,7 @@
       <li class="breadcrumb-item">
         <a href="{% url 'product_list' %}">Products</a>
       </li>
-      <li class="breadcrumb-item active" aria-current="page">
-        E-Bikes
-      </li>
+      <li class="breadcrumb-item active" aria-current="page">E-Bikes</li>
     </ol>
   </nav>
 
@@ -39,7 +35,7 @@
             {% endfor %}
           </div>
           <!-- Carousel controls -->
-          
+          <a
             class="carousel-control-prev"
             href="#carousel-{{ product.id }}"
             role="button"
@@ -48,7 +44,7 @@
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
           </a>
-          
+          <a
             class="carousel-control-next"
             href="#carousel-{{ product.id }}"
             role="button"
@@ -81,7 +77,7 @@
             <span class="badge badge-success">{{ product.stock_status }}</span>
             {% endif %}
           </p>
-          
+          <a
             href="{% url 'product_detail' product.pk %}"
             class="btn btn-primary mt-auto"
             >View Details</a
@@ -90,6 +86,7 @@
       </div>
     </div>
     {% empty %}
+    <!-- Display no products available if no products found -->
     <p>No e-bikes available at the moment.</p>
     {% endfor %}
   </div>

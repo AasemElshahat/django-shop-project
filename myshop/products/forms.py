@@ -9,4 +9,6 @@ class ProductForm(forms.ModelForm):
 class ProductImageForm(forms.ModelForm):
     class Meta:
         model = ProductImage
-        fields = ['product', 'image']
+        fields = ['image']
+
+ProductImageFormSet = forms.inlineformset_factory(Product, ProductImage, form=ProductImageForm, fields=['image'], extra=1, can_delete=True)

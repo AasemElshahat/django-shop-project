@@ -3,10 +3,11 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, user_passes_test
 from myshop.products.models import Product, Category, ProductImage
+from django.forms import modelformset_factory  # Add this import
 from myshop.reviews.models import Review
 from myshop.users.models import CustomUser
 from myshop.reviews.forms import ReviewForm
-from myshop.products.forms import ProductForm, ProductImageForm
+from myshop.products.forms import ProductForm, ProductImageForm, ProductImageFormSet
 from myshop.users.forms import UserForm
 
 def is_admin(user):
@@ -42,16 +43,26 @@ def product_list(request):
 @login_required
 @user_passes_test(is_admin)
 def product_create(request):
+    ProductImageFormSet = modelformset_factory(ProductImage, form=ProductImageForm, extra=1, can_delete=True)
+    
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
+        formset = ProductImageFormSet(request.POST, request.FILES, queryset=ProductImage.objects.none())
+        
+        if form.is_valid() and formset.is_valid():
+            product = form.save()
+            for form in formset.cleaned_data:
+                if form.get('image') and not form.get('DELETE'):
+                    ProductImage(product=product, image=form['image']).save()
             messages.success(request, 'Product created successfully.')
             return redirect('admin_product_list')
     else:
         form = ProductForm()
+        formset = ProductImageFormSet(queryset=ProductImage.objects.none())
+    
     context = {
         'form': form,
+        'formset': formset,
         'breadcrumbs': get_breadcrumbs('Create Product'),
     }
     return render(request, 'admin_panel/product_form.html', context)
@@ -60,16 +71,31 @@ def product_create(request):
 @user_passes_test(is_admin)
 def product_update(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    ProductImageFormSet = modelformset_factory(ProductImage, form=ProductImageForm, extra=1, can_delete=True)
+    
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES, instance=product)
-        if form.is_valid():
+        formset = ProductImageFormSet(request.POST, request.FILES, queryset=product.images.all())
+        
+        if form.is_valid() and formset.is_valid():
+            if 'delete_pdf' in request.POST:
+                product.pdf.delete()
             form.save()
+            instances = formset.save(commit=False)
+            for obj in formset.deleted_objects:
+                obj.delete()
+            for instance in instances:
+                instance.product = product
+                instance.save()
             messages.success(request, 'Product updated successfully.')
             return redirect('admin_product_list')
     else:
         form = ProductForm(instance=product)
+        formset = ProductImageFormSet(queryset=product.images.all())
+    
     context = {
         'form': form,
+        'formset': formset,
         'breadcrumbs': get_breadcrumbs('Update Product'),
     }
     return render(request, 'admin_panel/product_form.html', context)
