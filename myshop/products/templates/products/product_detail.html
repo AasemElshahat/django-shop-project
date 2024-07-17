@@ -128,10 +128,12 @@
             <button type="button" id="cancel-review-btn" class="btn btn-secondary">Cancel</button>
           </form>
         </div>
+      {% else %}
+        <p>Please <a href="{% url 'login' %}">log in</a> to write a review.</p>
       {% endif %}
 
       <div id="reviews-list" class="row mt-4">
-        {% if user_review %}
+        {% if user.is_authenticated and user_review %}
           <div class="col-md-4 mb-3">
             <div id="user-review" class="card h-100">
               <div class="card-body d-flex flex-column">
@@ -158,8 +160,8 @@
           </div>
         {% endif %}
 
-        {% for review in product.reviews.all %}
-          {% if review.user != user %}
+        {% for review in reviews %}
+          {% if not user.is_authenticated or review.user != user %}
             <div class="col-md-4 mb-3">
               <div class="card h-100">
                 <div class="card-body d-flex flex-column">
