@@ -9,18 +9,29 @@ from django.urls import reverse
 @login_required
 def add_to_cart(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    if request.method == 'POST':
-        quantity = int(request.POST.get('quantity', 1))
-        cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
-        if created:
-            cart_item.quantity = quantity
-        else:
-            cart_item.quantity += quantity
-        cart_item.save()
-        messages.success(request, f'{quantity} {product.name}(s) added to your cart.')
-    # return redirect('cart:view_cart')
-
-    return redirect(reverse('product_detail', args=[product_id]))
+    quantity = int(request.POST.get('quantity', 1))
+    
+    # Remove from wishlist if it exists
+    WishlistItem.objects.filter(user=request.user, product=product).delete()
+    
+    # Add to cart
+    cart_item, created = CartItem.objects.get_or_create(user=request.user, product=product)
+    if created:
+        cart_item.quantity = quantity
+    else:
+        cart_item.quantity += quantity
+    cart_item.save()
+    
+    messages.success(request, f'{quantity} {product.name}(s) moved to your cart.')
+    
+    # Check the referer to determine where to redirect
+    referer = request.META.get('HTTP_REFERER')
+    if referer and 'wishlist' in referer:
+        return redirect('cart:view_wishlist')
+    elif referer and 'cart' in referer:
+        return redirect('cart:view_cart')
+    else:
+        return redirect(reverse('product_detail', args=[product_id]))
 
 @login_required
 def view_cart(request):
@@ -69,10 +80,23 @@ def empty_cart(request):
 @login_required
 def add_to_wishlist(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+    
+    # Remove from cart if it exists
+    CartItem.objects.filter(user=request.user, product=product).delete()
+    
+    # Add to wishlist
     WishlistItem.objects.get_or_create(user=request.user, product=product)
-    messages.success(request, f'{product.name}(s) added to your wishlist.')
-    # return redirect('cart:view_wishlist')
-    return redirect(reverse('product_detail', args=[product_id]))
+    
+    messages.success(request, f'{product.name} moved to your wishlist.')
+    
+    # Check the referer to determine where to redirect
+    referer = request.META.get('HTTP_REFERER')
+    if referer and 'cart' in referer:
+        return redirect('cart:view_cart')
+    elif referer and 'wishlist' in referer:
+        return redirect('cart:view_wishlist')
+    else:
+        return redirect(reverse('product_detail', args=[product_id]))
 
 @login_required
 def remove_from_wishlist(request, wishlist_item_id):
@@ -92,3 +116,15 @@ def view_wishlist(request):
         'wishlist_total': wishlist_total,
     }
     return render(request, 'cart/view_wishlist.html', context)
+
+@login_required
+def add_all_to_cart(request):
+    wishlist_items = WishlistItem.objects.filter(user=request.user)
+    for wishlist_item in wishlist_items:
+        cart_item, created = CartItem.objects.get_or_create(user=request.user, product=wishlist_item.product)
+        if not created:
+            cart_item.quantity += 1
+            cart_item.save()
+    wishlist_items.delete()
+    messages.success(request, 'All items from your wishlist have been added to your cart.')
+    return redirect('cart:view_cart')
