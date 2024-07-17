@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-a$8b=xllsd(j&p1+^v%qtmfvzdydba(iv%v3h^#&tyxfvfomy*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['Aasem.pythonanywhere.com']
+ALLOWED_HOSTS = ['Aasem.pythonanywhere.com', '127.0.0.1']
 
 # Authentication and Login/Logout redirection
 AUTH_USER_MODEL = 'users.CustomUser'
@@ -39,6 +39,8 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'myshop/media')
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'myshop/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 
 # Add the following if you have static files in the root static directory
 STATICFILES_DIRS = [
