@@ -1,4 +1,7 @@
-{% extends 'base.html' %} {% block content %} {% load static %}
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
 <div class="container mt-4">
   <!-- Breadcrumbs -->
   <nav aria-label="breadcrumb">
@@ -15,38 +18,20 @@
   <div class="row">
     <div class="col-md-6">
       <!-- Carousel for product images -->
-      <div
-        id="carousel-{{ product.id }}"
-        class="carousel slide"
-        data-bs-ride="carousel"
-      >
+      <div id="carousel-{{ product.id }}" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
           {% for image in product.images.all %}
           <div class="carousel-item {% if forloop.first %}active{% endif %}">
-            <img
-              src="{{ image.image.url }}"
-              class="d-block w-100"
-              alt="{{ product.name }}"
-            />
+            <img src="{{ image.image.url }}" class="d-block w-100" alt="{{ product.name }}" />
           </div>
           {% endfor %}
         </div>
         <!-- Carousel controls -->
-        <a
-          class="carousel-control-prev"
-          href="#carousel-{{ product.id }}"
-          role="button"
-          data-bs-slide="prev"
-        >
+        <a class="carousel-control-prev" href="#carousel-{{ product.id }}" role="button" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </a>
-        <a
-          class="carousel-control-next"
-          href="#carousel-{{ product.id }}"
-          role="button"
-          data-bs-slide="next"
-        >
+        <a class="carousel-control-next" href="#carousel-{{ product.id }}" role="button" data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </a>
@@ -59,12 +44,8 @@
 
       {% if product.discount %}
       <p>
-        <span class="text-muted" style="text-decoration: line-through"
-          >${{ product.price }}</span
-        >
-        <span class="text-danger"
-          >${{ product.discounted_price|floatformat:2 }}</span
-        >
+        <span class="text-muted" style="text-decoration: line-through">${{ product.price }}</span>
+        <span class="text-danger">${{ product.discounted_price|floatformat:2 }}</span>
       </p>
       {% else %}
       <p>${{ product.price }}</p>
@@ -83,8 +64,7 @@
         {% csrf_token %}
         <div class="form-group">
           <label for="quantity">Quantity:</label>
-          <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control" style="width: 80px;"
-                {% if product.stock_status == EMPTY_STOCK %}disabled{% endif %}>
+          <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control" style="width: 80px;" {% if product.stock_status == EMPTY_STOCK %}disabled{% endif %}>
         </div>
         <button type="submit" class="btn btn-primary" {% if product.stock_status == EMPTY_STOCK %}disabled{% endif %}>
           {% if product.stock_status == EMPTY_STOCK %}Out of Stock{% else %}Add to Cart{% endif %}
@@ -94,10 +74,7 @@
         {% csrf_token %}
         <button type="submit" class="btn btn-outline-secondary">Add to Wishlist</button>
       </form>
-      <!-- <a href="#" class="btn btn-primary">Add to Cart</a> -->
-      <a href="{{ product.pdf.url }}" class="btn btn-secondary mt-2" target="_blank"
-        >Download Description</a
-      >
+      <a href="{{ product.pdf.url }}" class="btn btn-secondary mt-2" target="_blank">Download Description</a>
     </div>
 
     <!-- Reviews Section -->
@@ -116,48 +93,47 @@
       <!-- Sorting options -->
       <div class="mb-3">
         <form method="GET" class="form-inline">
-            <label for="sort-reviews" class="mr-2">Sort by:</label>
-            <select id="sort-reviews" name="sort" class="form-control mr-2" onchange="this.form.submit()" aria-label="Sort reviews">
-                <option value="date-desc" {% if sort == 'date-desc' %}selected{% endif %}>Most Recent</option>
-                <option value="date-asc" {% if sort == 'date-asc' %}selected{% endif %}>Oldest</option>
-                <option value="rating-desc" {% if sort == 'rating-desc' %}selected{% endif %}>Highest Rated</option>
-                <option value="rating-asc" {% if sort == 'rating-asc' %}selected{% endif %}>Lowest Rated</option>
-            </select>
+          <label for="sort-reviews" class="mr-2">Sort by:</label>
+          <select id="sort-reviews" name="sort" class="form-control mr-2" onchange="this.form.submit()" aria-label="Sort reviews">
+            <option value="date-desc" {% if sort == 'date-desc' %}selected{% endif %}>Most Recent</option>
+            <option value="date-asc" {% if sort == 'date-asc' %}selected{% endif %}>Oldest</option>
+            <option value="rating-desc" {% if sort == 'rating-desc' %}selected{% endif %}>Highest Rated</option>
+            <option value="rating-asc" {% if sort == 'rating-asc' %}selected{% endif %}>Lowest Rated</option>
+          </select>
         </form>
       </div>
-    
 
       {% if user.is_authenticated %}
         {% if not user_review %}
           <button id="write-review-btn" class="btn btn-primary mb-3">Write a Review</button>
-          <div id="review-form-container" style="display: none;">
-            <form method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="review_action" value="create_or_edit">
-              <div class="form-group">
-                <label for="id_rating">Rating:</label>
-                <div class="star-rating-input">
-                  {% for i in "12345" %}
-                  <span class="star" data-rating="{{ forloop.counter }}">&#9733;</span>
-                  {% endfor %}
-                </div>
-                {{ review_form.rating }}
-              </div>
-              <div class="form-group">
-                {{ review_form.comment.label_tag }}
-                {{ review_form.comment }}
-              </div>
-              <button type="submit" class="btn btn-primary">Submit Review</button>
-              <button type="button" id="cancel-review-btn" class="btn btn-secondary">Cancel</button>
-            </form>
-          </div>
         {% endif %}
+        <div id="review-form-container" style="display: none;">
+          <form method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="review_action" value="create_or_edit">
+            <div class="form-group">
+              <label for="id_rating">Rating:</label>
+              <div class="star-rating-input">
+                {% for i in "12345" %}
+                <span class="star" data-rating="{{ forloop.counter }}">&#9733;</span>
+                {% endfor %}
+              </div>
+              {{ review_form.rating }}
+            </div>
+            <div class="form-group">
+              {{ review_form.comment.label_tag }}
+              {{ review_form.comment }}
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Review</button>
+            <button type="button" id="cancel-review-btn" class="btn btn-secondary">Cancel</button>
+          </form>
+        </div>
       {% endif %}
 
       <div id="reviews-list" class="row mt-4">
         {% if user_review %}
           <div class="col-md-4 mb-3">
-            <div class="card h-100">
+            <div id="user-review" class="card h-100">
               <div class="card-body d-flex flex-column">
                 <h5 class="card-title">Your Review</h5>
                 <div class="star-rating mb-2" data-rating="{{ user_review.rating }}">
@@ -205,49 +181,49 @@
       </div>
     </div>
 
-
-  <div class="row mt-4">
-    <div class="col-12">
-      <h3>Related Products</h3>
-    </div>
-    {% for related_product in related_products %}
-    <div class="col-md-3 mb-3">
-      <div class="card h-100">
-        {% with related_product.images.first as image %}
-          {% if image %}
-            <img src="{{ image.image.url }}" class="card-img-top" alt="{{ related_product.name }}">
-          {% else %}
-            <img src="{% static 'images/noImgPlaceholder.jpeg' %}" class="card-img-top" alt="No image available">
-          {% endif %}
-        {% endwith %}
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title">{{ related_product.name }}</h5>
-          <p class="card-text">
-            {% if related_product.discount %}
-              <span class="text-muted" style="text-decoration: line-through">${{ related_product.price }}</span>
-              <span class="text-danger">${{ related_product.discounted_price|floatformat:2 }}</span>
+    <div class="row mt-4">
+      <div class="col-12">
+        <h3>Related Products</h3>
+      </div>
+      {% for related_product in related_products %}
+      <div class="col-md-3 mb-3">
+        <div class="card h-100">
+          {% with related_product.images.first as image %}
+            {% if image %}
+              <img src="{{ image.image.url }}" class="card-img-top" alt="{{ related_product.name }}">
             {% else %}
-              ${{ related_product.price }}
+              <img src="{% static 'images/noImgPlaceholder.jpeg' %}" class="card-img-top" alt="No image available">
             {% endif %}
-          </p>
-          <a href="{% url 'product_detail' related_product.id %}" class="btn btn-primary mt-auto">View Product</a>
+          {% endwith %}
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ related_product.name }}</h5>
+            <p class="card-text">
+              {% if related_product.discount %}
+                <span class="text-muted" style="text-decoration: line-through">${{ related_product.price }}</span>
+                <span class="text-danger">${{ related_product.discounted_price|floatformat:2 }}</span>
+              {% else %}
+                ${{ related_product.price }}
+              {% endif %}
+            </p>
+            <a href="{% url 'product_detail' related_product.id %}" class="btn btn-primary mt-auto">View Product</a>
+          </div>
         </div>
       </div>
+      {% endfor %}
     </div>
-    {% endfor %}
   </div>
 </div>
 
-
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const writeReviewBtn = document.getElementById('write-review-btn');
-    const editReviewBtn = document.getElementById('edit-review-btn');
-    const cancelReviewBtn = document.getElementById('cancel-review-btn');
-    const reviewFormContainer = document.getElementById('review-form-container');
-    const userReview = document.getElementById('user-review');
-  
-    function toggleReviewForm() {
+document.addEventListener('DOMContentLoaded', function() {
+  const writeReviewBtn = document.getElementById('write-review-btn');
+  const editReviewBtn = document.getElementById('edit-review-btn');
+  const cancelReviewBtn = document.getElementById('cancel-review-btn');
+  const reviewFormContainer = document.getElementById('review-form-container');
+  const userReview = document.getElementById('user-review');
+
+  function toggleReviewForm() {
+    if (reviewFormContainer) {
       if (reviewFormContainer.style.display === 'none') {
         reviewFormContainer.style.display = 'block';
         if (userReview) userReview.style.display = 'none';
@@ -257,59 +233,73 @@
         if (userReview) userReview.style.display = 'block';
         if (writeReviewBtn) writeReviewBtn.style.display = 'block';
       }
+    } else {
+      console.error('Review form container not found');
     }
-  
-    if (writeReviewBtn) {
-      writeReviewBtn.addEventListener('click', toggleReviewForm);
-    }
-  
-    if (editReviewBtn) {
-      editReviewBtn.addEventListener('click', toggleReviewForm);
-    }
-  
-    if (cancelReviewBtn) {
-      cancelReviewBtn.addEventListener('click', toggleReviewForm);
-    }
-  
-    // Star rating functionality
-    const starRatingInput = document.querySelector(".star-rating-input");
-    const ratingField = document.getElementById("id_rating");
-  
-    if (starRatingInput && ratingField) {
-      const stars = starRatingInput.querySelectorAll(".star");
-  
-      stars.forEach((star) => {
-        star.addEventListener("mouseover", function () {
-          const rating = this.dataset.rating;
-          highlightStars(rating);
-        });
-  
-        star.addEventListener("mouseout", function () {
-          const currentRating = ratingField.value;
-          highlightStars(currentRating);
-        });
-  
-        star.addEventListener("click", function () {
-          const rating = this.dataset.rating;
-          ratingField.value = rating;
-          highlightStars(rating);
-        });
-      });
-  
-      function highlightStars(rating) {
-        stars.forEach((star) => {
-          if (star.dataset.rating <= rating) {
-            star.classList.add("filled");
-          } else {
-            star.classList.remove("filled");
-          }
-        });
+  }
+
+  if (writeReviewBtn) {
+    writeReviewBtn.addEventListener('click', toggleReviewForm);
+  }
+
+  if (editReviewBtn) {
+    editReviewBtn.addEventListener('click', function() {
+      if (reviewFormContainer) {
+        // Populate form with existing review data
+        document.getElementById('id_rating').value = "{{ user_review.rating }}";
+        document.getElementById('id_comment').value = "{{ user_review.comment }}";
+        highlightStars("{{ user_review.rating }}");
+        
+        toggleReviewForm();
+      } else {
+        console.error('Review form container not found');
       }
-  
-      // Initialize stars based on the current rating
-      highlightStars(ratingField.value);
+    });
+  }
+
+  if (cancelReviewBtn) {
+    cancelReviewBtn.addEventListener('click', toggleReviewForm);
+  }
+
+  // Star rating functionality
+  const starRatingInput = document.querySelector(".star-rating-input");
+  const ratingField = document.getElementById("id_rating");
+
+  if (starRatingInput && ratingField) {
+    const stars = starRatingInput.querySelectorAll(".star");
+
+    stars.forEach((star) => {
+      star.addEventListener("mouseover", function () {
+        const rating = this.dataset.rating;
+        highlightStars(rating);
+      });
+
+      star.addEventListener("mouseout", function () {
+        const currentRating = ratingField.value;
+        highlightStars(currentRating);
+      });
+
+      star.addEventListener("click", function () {
+        const rating = this.dataset.rating;
+        ratingField.value = rating;
+        highlightStars(rating);
+      });
+    });
+
+    function highlightStars(rating) {
+      stars.forEach((star) => {
+        if (star.dataset.rating <= rating) {
+          star.classList.add("filled");
+        } else {
+          star.classList.remove("filled");
+        }
+      });
     }
-  });
+
+    // Initialize stars based on the current rating
+    highlightStars(ratingField.value);
+  }
+});
 </script>
-  
+
 {% endblock %}
