@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block content %} {% load static %}
+<div class="container mt-4">
+  <!-- Breadcrumbs -->
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'product_list' %}">Products</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Clothing</li>
+    </ol>
+  </nav>
+
+  <h2>Clothing</h2>
+
+  <div class="row">
+    {% for product in products %}
+    <!-- Same content as in ebike_list.html -->
+    {% empty %}
+    <p>No clothing items available at the moment.</p>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

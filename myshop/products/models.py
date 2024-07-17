@@ -22,6 +22,8 @@ class Product(models.Model):
   discount = models.IntegerField(default=0)
   stock = models.IntegerField(default=0)
   category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+  featured = models.BooleanField(default=False)  # New field
+
 
   def __str__(self):
     return self.name
